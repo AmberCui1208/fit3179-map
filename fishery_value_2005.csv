@@ -1,8 +1,10 @@
-State,GrossValue_000AUD
-New South Wales,81017
-Victoria,77250
-Queensland,218456
-South Australia,192674
-Western Australia,417653
-Tasmania,170165
-Northern Territory,31336
+STE_CODE16,State,GrossValue_000AUD
+1,New South Wales,81017
+2,Victoria,77250
+3,Queensland,218456
+4,South Australia,192674
+5,Western Australia,417653
+6,Tasmania,170165
+7,Northern Territory,31336
+8,Australian Capital Territory,0
+
