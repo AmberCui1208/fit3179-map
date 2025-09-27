@@ -10,13 +10,11 @@
   <style>
     body{margin:0;background:#ffffff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
     .wrap{max-width:920px;margin:24px auto;padding:0 16px}
-    h1{font-size:20px;margin:0 0 12px;text-align:center}
     #vis{box-shadow:0 4px 16px rgba(0,0,0,.06);border-radius:8px;overflow:hidden}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Australia 2005 Fishery Gross Value by State/Territory</h1>
     <div id="vis"></div>
   </div>
   <script>
@@ -24,6 +22,12 @@
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "width": 600,
       "height": 400,
+      "title": {
+        "text": "Australia 2005 Fishery Gross Value by State/Territory",
+        "fontSize": 20,
+        "fontWeight": "bold",
+        "anchor": "middle"
+      },
       "projection": {"type": "equirectangular"},
       "layer": [
         {
@@ -85,3 +89,4 @@
   </script>
 </body>
 </html>
+
