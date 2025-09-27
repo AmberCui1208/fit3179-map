@@ -2,60 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Australia 2005 Fishery Value by State/Territory (AUD thousands)</title>
+  <title>Australia 2005 Fishery Gross Value by State/Territory</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
   <style>
     body{margin:0;background:#e6f3ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-    .wrap{max-width:900px;margin:24px auto;padding:0 16px}
+    .wrap{max-width:920px;margin:24px auto;padding:0 16px}
     h1{font-size:20px;margin:0 0 12px;text-align:center}
-    #vis{box-shadow:0 4px 16px rgba(0,0,0,.06);border-radius:8px;overflow:hidden;background:#e6f3ff}
+    #vis{box-shadow:0 4px 16px rgba(0,0,0,.06);border-radius:8px;overflow:hidden}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Australia 2005 Fishery Value by State/Territory (AUD thousands)</h1>
+    <h1>Australia 2005 Fishery Gross Value by State/Territory</h1>
     <div id="vis"></div>
   </div>
   <script>
-    const spec={
-      "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
-      "width":600,
-      "height":400,
-      "title":"Australia 2005 Fishery Value by State/Territory (AUD thousands)",
-      "projection":{"type":"equirectangular"},
-      "layer":[
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "width": 600,
+      "height": 400,
+      "title": {
+        "text": "Australia 2005 Fishery Gross Value by State/Territory",
+        "fontSize": 20,
+        "fontWeight": "bold",
+        "anchor": "middle"
+      },
+      "projection": {"type": "equirectangular"},
+      "layer": [
         {
-          "data":{"graticule":{"step":[10,10],"extent":[[96,-44],[168,-9]]}},
-          "mark":{"type":"geoshape","stroke":"#cbd5e1","strokeWidth":0.5,"opacity":0.8}
+          "data": {
+            "graticule": {"step": [10, 10], "extent": [[96, -44], [168, -9]]}
+          },
+          "mark": {
+            "type": "geoshape",
+            "stroke": "#cbd5e1",
+            "strokeWidth": 0.5,
+            "opacity": 0.8
+          }
         },
         {
-          "data":{
-            "url":"https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/STE_2016_AUST.json",
-            "format":{"type":"topojson","feature":"STE_2016_AUST"}
+          "data": {
+            "url": "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/STE_2016_AUST.json",
+            "format": {"type": "topojson", "feature": "STE_2016_AUST"}
           },
-          "transform":[
-            {"lookup":"properties.STE_CODE16",
-             "from":{"data":{"url":"https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/fishery_value_2005%202.csv"},
-                     "key":"STE_CODE16","fields":["GrossValue_000AUD","State"]}}
+          "transform": [
+            {
+              "lookup": "properties.STE_CODE16",
+              "from": {
+                "data": {
+                  "url": "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/fishery_value_2005%202.csv"
+                },
+                "key": "STE_CODE16",
+                "fields": ["GrossValue_000AUD", "State"]
+              }
+            }
           ],
-          "mark":{"type":"geoshape","stroke":"white","strokeWidth":0.5},
-          "encoding":{
-            "color":{"field":"GrossValue_000AUD","type":"quantitative","title":"Fishery value","scale":{"scheme":"greenblue"}},
-            "tooltip":[
-              {"field":"State","type":"nominal","title":"State/Territory"},
-              {"field":"GrossValue_000AUD","type":"quantitative","title":"Fishery value "}
+          "mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.5},
+          "encoding": {
+            "color": {
+              "field": "GrossValue_000AUD",
+              "type": "quantitative",
+              "title": "Fishery value (AUD thousands)",
+              "scale": {"scheme": "greenblue"},
+              "legend": {
+                "type": "gradient",
+                "orient": "right",
+                "gradientLength": 200,
+                "gradientThickness": 14,
+                "titleLimit": 1000,
+                "labelLimit": 1000,
+                "titleFontSize": 12,
+                "labelFontSize": 10
+              }
+            },
+            "tooltip": [
+              {"field": "State", "type": "nominal", "title": "State/Territory"},
+              {"field": "GrossValue_000AUD", "type": "quantitative", "title": "Fishery value "}
             ]
           }
         }
       ],
-      "config":{"background":"#e6f3ff","view":{"stroke":null}}
+      "config": {"background": "#e6f3ff", "view": {"stroke": null}}
     };
-    vegaEmbed('#vis', spec, {actions:false}).catch(e=>{document.querySelector('#vis').textContent=e;});
+    vegaEmbed("#vis", spec, {actions:false}).catch(e => { document.querySelector("#vis").textContent = e; });
   </script>
 </body>
 </html>
-
-
