@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Australian Fishery Value Dashboard</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Vega & Vega-Lite -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+  <!-- Font Awesome (icon in header) -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#06174d', background: '#e6f3ff' }
+        }
+      }
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .chart-container { @apply bg-white rounded-lg shadow-md p-4 md:p-6 transition-all duration-300 hover:shadow-lg; }
+      .dashboard-header { @apply text-2xl md:text-3xl font-bold text-primary mb-6 md:mb-8; }
+    }
+  </style>
+</head>
+
+<body class="bg-background min-h-screen p-4 md:p-8">
+  <div class="max-w-7xl mx-auto">
+    <header class="mb-8">
+      <h1 class="dashboard-header"><i class="fa fa-bar-chart mr-3"></i>Australian Fishery Value Analysis</h1>
+      <p class="text-gray-700 mb-4">Comprehensive analysis of fishery values across Australian states and territories.</p>
+    </header>
+
+    <section class="mb-8">
+      <div class="chart-container">
+        <div id="state-map" class="w-full h-[520px]"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="chart-container">
+        <div id="state-comparison" class="w-full h-[580px]"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const csvWide = "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/Fishery_values__wide__preview.csv";
+
+    /* 1) Australia state/territory map */
+    const stateMapSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "autosize": {"type": "fit", "contains": "padding"},
+      "width": 1050,
+      "height": 420,
+      "title": {
+        "text": "Australia Fishery Value by State/Territory",
+        "fontSize": 18,
+        "anchor": "start"   /* 左对齐 */
+      },
+      "projection": {"type": "equirectangular"},
+      "params": [
+        {
+          "name": "yearLabel",
+          "value": "2023–24",
+          "bind": {
+            "input": "select",
+            "options": ["2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24"],
+            "name": "Year"
+          }
+        }
+      ],
+      "layer": [
+        {
+          "data": { "graticule": { "step": [10,10], "extent": [[96,-44],[168,-9]] } },
+          "mark": { "type": "geoshape", "stroke": "#cbd5e1", "strokeWidth": 0.5, "opacity": 0.6 }
+        },
+        {
+          "data": {
+            "url": "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/main/STE_2016_AUST.json",
+            "format": { "type": "topojson", "feature": "STE_2016_AUST" }
+          },
+          "params": [
+            {
+              "name": "stHover",
+              "select": { "type": "point", "fields": ["properties.STE_NAME16"], "on": "pointerover", "clear": "pointerout" }
+            }
+          ],
+          "transform": [
+            {
+              "lookup": "properties.STE_NAME16",
+              "from": {
+                "data": { "url": csvWide },
+                "key": "Commodity",
+                "fields": ["unit","2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24"]
+              }
+            },
+            { "fold": ["2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24"], "as": ["YearLabel","Value_raw"] },
+            { "filter": "datum.YearLabel == yearLabel" },
+            { "calculate": "toNumber(datum.Value_raw)", "as": "Value_kAUD" },
+            { "filter": "isValid(datum.Value_kAUD) && isFinite(datum.Value_kAUD)" }  /* 防止 null/NaN */
+          ],
+          "mark": { "type": "geoshape", "stroke": "white" },
+          "encoding": {
+            "color": {
+              "field": "Value_kAUD",
+              "type": "quantitative",
+              "title": "Value ($'000 AUD)",
+              "scale": { "scheme": "greenblue" }
+            },
+            "strokeWidth": {
+              "condition": { "param": "stHover", "empty": false, "value": 3 },
+              "value": 0.6
+            },
+            "tooltip": [
+              { "field": "properties.STE_NAME16", "title": "State/Territory" },
+              { "field": "YearLabel", "title": "Year" },
+              { "field": "Value_kAUD", "type": "quantitative", "title": "Value ($'000)", "format": ",.0f" }
+            ]
+          }
+        },
+        /* 最高值注释（红色、斜体、细字重） */
+        {
+          "data": { "url": csvWide },
+          "transform": [
+            { "fold": ["2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24"], "as": ["YearLabel","Value_raw"] },
+            { "filter": "datum.YearLabel == yearLabel" },
+            { "calculate": "toNumber(datum.Value_raw) || 0", "as": "Value_kAUD" },
+            { "filter": "isValid(datum.Value_kAUD) && isFinite(datum.Value_kAUD)" },
+            { "window": [{ "op": "max", "field": "Value_kAUD", "as": "maxVal" }], "frame": [null,null] },
+            { "filter": "datum.Value_kAUD == datum.maxVal" },
+            { "calculate": "'Highest: ' + datum.Commodity + ' — ' + format(datum.Value_kAUD, ',.0f') + ' $\\'000'", "as": "peakLabel" }
+          ],
+          "mark": {
+            "type": "text",
+            "x": 16, "y": 18,
+            "align": "left", "baseline": "top",
+            "fontSize": 12,
+            "fontStyle": "italic",
+            "fontWeight": 300,
+            "color": "#b91c1c"   /* 红色 */
+          },
+          "encoding": { "text": { "field": "peakLabel" } }
+        },
+        /* 全国总额注释（深蓝色、斜体、细字重） */
+        {
+          "data": { "url": csvWide },
+          "transform": [
+            { "fold": ["2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24"], "as": ["YearLabel","Value_raw"] },
+            { "filter": "datum.YearLabel == yearLabel" },
+            { "calculate": "toNumber(datum.Value_raw) || 0", "as": "Value_kAUD" },
+            { "filter": "isValid(datum.Value_kAUD) && isFinite(datum.Value_kAUD)" },
+            { "window": [{ "op": "sum", "field": "Value_kAUD", "as": "natSum" }], "frame": [null,null] },
+            { "calculate": "'National Total: ' + format(datum.natSum, ',.0f') + ' $\\'000'", "as": "sumLabel" }
+          ],
+          "mark": {
+            "type": "text",
+            "x": 16, "y": 36,
+            "align": "left", "baseline": "top",
+            "fontSize": 12,
+            "fontStyle": "italic",
+            "fontWeight": 300,
+            "color": "#b91c1c"   /* 深蓝色 */
+          },
+          "encoding": { "text": { "field": "sumLabel" } }
+        }
+      ],
+      "config": { "background": "#e6f3ff", "view": { "stroke": null } }
+    };
+
+    /* 2) NSW vs QLD stacked areas with time brush */
+    const stateComparisonSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "autosize": {"type": "fit", "contains": "padding"},
+      "title": {
+        "text": "Fishery Value: New South Wales vs Queensland (1998–2024)",
+        "fontSize": 18,
+        "anchor": "start"   /* 左对齐 */
+      },
+      "data": { "url": "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/data2.csv" },
+      "transform": [
+        { "fold": ["1998–99","1999–00","2000–01","2001–02","2002–03","2003–04","2004–05","2005–06","2006–07","2007–08","2008–09","2009–10","2010–11","2011–12","2012–13","2013–14","2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24p"], "as": ["YearLabel","Value_raw"] },
+        { "calculate": "toNumber(datum.Value_raw) || 0", "as": "Value_kAUD" },
+        { "filter": "isValid(datum.Value_kAUD) && isFinite(datum.Value_kAUD)" },  /* 防止 null/NaN */
+        { "calculate": "toNumber(substring(datum.YearLabel,0,4))", "as": "YearStart" },
+        { "calculate": "datum.YearStart + 1", "as": "YearEnd" },
+        { "calculate": "toDate(datum.YearEnd + '-06-30')", "as": "FiscalYearDate" },
+        { "calculate": "replace(datum.YearLabel,'p','')", "as": "YearDisplay" }
+      ],
+      "vconcat": [
+        {
+          "width": 980,
+          "height": 360,
+          "mark": { "type": "area", "line": true, "point": true, "interpolate": "monotone" },
+          "encoding": {
+            "x": {
+              "field": "FiscalYearDate", "type": "temporal",
+              "scale": {"domain": {"param": "timeBrush"}},
+              "axis": {"title": "Fiscal Year","titleColor": "#06174d","labelAngle": -45,"tickCount": 8,"format": "%Y","labelFontSize": 11}
+            },
+            "y": {
+              "aggregate": "sum", "field": "Value_kAUD", "type": "quantitative",
+              "title": "Fishery Value ($'000 AUD)","titleColor": "#06174d",
+              "axis": {"format": ",.0f","labelFontSize": 11},
+              "stack": "zero"
+            },
+            "color": {
+              "field": "Commodity","type": "nominal","title": "Australian State",
+              "scale": { "domain": ["New South Wales","Queensland"], "range": ["#3498db","#e74c3c"] },
+              "legend": { "orient": "top-right" }
+            },
+            "tooltip": [
+              {"field": "YearDisplay", "title": "Fiscal Year"},
+              {"field": "Commodity", "title": "State"},
+              {"field": "Value_kAUD", "title": "Value ($'000 AUD)", "format": ",.0f"},
+              {"field": "unit", "title": "Unit"}
+            ]
+          }
+        },
+        {
+          "width": 980,
+          "height": 100,
+          "mark": "area",
+          "params": [ { "name": "timeBrush", "select": { "type": "interval", "encodings": ["x"] } } ],
+          "encoding": {
+            "x": { "field": "FiscalYearDate","type": "temporal","axis": {"title": "","labelAngle": -45,"tickCount": 10,"labelFontSize": 10} },
+            "y": { "aggregate": "sum","field": "Value_kAUD","type": "quantitative","axis": {"title": "Total Value","format": ",.0f","tickCount": 2,"labelFontSize": 10},"stack": "zero" },
+            "color": { "field": "Commodity","type": "nominal","scale": { "domain": ["New South Wales","Queensland"], "range": ["#3498db","#e74c3c"] }, "legend": null }
+          }
+        }
+      ],
+      "config": { "view": { "stroke": null }, "background": "#e6f3ff", "axis": { "gridColor": "#cbd5e1", "gridOpacity": 0.6 } }
+    };
+
+    /* Embed and handle resize */
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const mapResult = await vegaEmbed('#state-map', stateMapSpec, { actions: true, renderer: 'canvas' });
+        const stackedResult = await vegaEmbed('#state-comparison', stateComparisonSpec, { actions: true, renderer: 'canvas' });
+
+        window.addEventListener('resize', () => {
+          mapResult.view.resize().run();
+          stackedResult.view.resize().run();
+        });
+      } catch (err) { console.error(err); }
+    });
+  </script>
+</body>
+</html>
+
+
+
