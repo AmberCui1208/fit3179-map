@@ -37,7 +37,7 @@
       .section-sub { @apply text-slate-700 mt-2; }
       .chart-block { @apply mt-4 md:mt-6; }
       .sr { @apply sr-only; }
-      /* 图片占位样式（可直接替换成真实 <img>） */
+      
       .img-slot { @apply w-full h-48 md:h-56 bg-white/60 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center text-slate-400 text-sm; }
       .img-slot-tall { @apply w-full h-64 md:h-72 bg-white/60 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center text-slate-400 text-sm; }
     }
@@ -614,7 +614,7 @@
       "config": { "view": {"stroke": null}, "axis": {"grid": false} }
     };
 
-    /* 嵌入与自适应（隐藏 actions 菜单；需要可改 true） */
+    
     document.addEventListener('DOMContentLoaded', async () => {
       try {
         const opts = { actions: false, renderer: 'canvas' };
@@ -635,6 +635,7 @@
   </script>
 </body>
 </html>
+
 
 
 
