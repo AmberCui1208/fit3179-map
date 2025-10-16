@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Australian Fishery Value Dashboard</title>
+  <title>Australian Fishery Value Dashboard </title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,14 +13,14 @@
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 
-  <!-- Font Awesome (icon in header) -->
+  <!-- Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          colors: { primary: '#06174d', background: '#e6f3ff' }
+          colors: { primary: '#06174d', background: '#f6fbff' }
         }
       }
     }
@@ -28,100 +28,264 @@
 
   <style type="text/tailwindcss">
     @layer utilities {
-      .chart-container { @apply bg-white rounded-lg shadow-md p-4 md:p-6 transition-all duration-300 hover:shadow-lg; }
-      .dashboard-header { @apply text-2xl md:text-3xl font-bold text-primary mb-6 md:mb-8; }
+      .container-narrow { @apply max-w-7xl mx-auto px-4 md:px-8; }
+      .hero-title { @apply text-3xl md:text-4xl font-bold text-primary tracking-tight; }
+      .hero-sub { @apply text-base md:text-lg text-slate-700 mt-3; }
+      .nav-link { @apply text-sm md:text-base text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary/30 rounded px-1; }
+      .section { @apply pt-10 md:pt-12; }
+      .section-title { @apply text-xl md:text-2xl font-semibold text-primary; }
+      .section-sub { @apply text-slate-700 mt-2; }
+      .chart-block { @apply mt-4 md:mt-6; }
+      .sr { @apply sr-only; }
+      /* 图片占位样式（可直接替换成真实 <img>） */
+      .img-slot { @apply w-full h-48 md:h-56 bg-white/60 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center text-slate-400 text-sm; }
+      .img-slot-tall { @apply w-full h-64 md:h-72 bg-white/60 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center text-slate-400 text-sm; }
     }
   </style>
 </head>
 
-<body class="bg-background min-h-screen p-4 md:p-8">
-  <div class="max-w-7xl mx-auto">
-    <header class="mb-8">
-      <h1 class="dashboard-header"><i class="fa fa-bar-chart mr-3"></i>Australian Fishery Value Analysis</h1>
-      <p class="text-gray-700 mb-4">Comprehensive analysis of fishery values across Australian states and territories.</p>
-    </header>
+<body class="bg-background min-h-screen">
 
-    <section class="mb-8">
-      <div class="chart-container">
-        <div id="state-map" class="w-full h-[520px]"></div>
+  <!-- Hero -->
+<!-- Hero -->
+  <header class="mx-auto max-w-screen-xl px-4 md:px-6 lg:px-8 py-10 md:py-14">
+    <div class="grid gap-7 md:gap-12 md:grid-cols-[1fr,420px] lg:grid-cols-[1fr,520px] items-start">
+     
+      <div class="max-w-prose">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-[#06174d] mb-4">
+          <i class="fa fa-bar-chart mr-3"></i>Australian Fishery Value Analysis
+        </h1>
+        <p class="text-gray-700 text-lg md:text-xl leading-relaxed mb-3">
+          Australia’s fisheries aren’t just about the catch—they’re a vital thread in the nation’s economic and food security fabric. 
+          This dashboard pulls back the curtain on how these values shift across states and territories, 
+          revealing regional strengths and the stories behind decades of trends.
+        </p>
+        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-3">
+          Dive into these patterns, and you’ll uncover more than numbers: discover sustainable growth hotspots, 
+          emerging opportunities, and the evolving landscape of Australia’s seafood industry.
+        </p>
+        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-3">
+          Designed for the general Australian audience, this interactive Vega-Lite dashboard transforms 
+          official fishery statistics into clear, visual insights that support understanding and policy reflection.
+        </p>
+        
+        </p>
+      </div>
+
+      <!-- 右侧更大的图 -->
+      <figure class="justify-self-end w-full">
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          <img
+            src="https://raw.githubusercontent.com/AmberCui1208/fit3179-map/main/fish-lobster-shrimp-squid-hand-260nw-2445155959.jpg.webp"
+            alt="Fishery products"
+            class="w-full h-full object-cover aspect-[5/4] transition-transform duration-300 hover:scale-105"
+          />
+        </div>
+      </figure>
+    </div>
+  </header>
+ 
+
+
+
+    <main class="container-narrow pb-16">
+      <!-- Introduction -->
+      <section id="intro" class="section">
+        <h2 class="section-title">Introduction</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="md:col-span-2">
+            <p class="section-sub">
+              This dashboard provides a clear overview of how fishery values vary across
+              Australian states and territories — both spatially and over time. 
+              It aims to help readers understand the economic significance of fisheries 
+              through multiple perspectives, including geography, trend comparison, 
+              and structural composition.
+            </p>
+            <ul class="list-disc pl-5 mt-3 text-slate-700">
+              <li>Identify which state or territory recorded the <strong>highest and lowest</strong> fishery values each year.</li>
+              <li>Track <strong>growth or decline</strong> trends across the past decade.</li>
+              <li>Explore how different <strong>species and production types</strong> contribute to overall value.</li>
+            </ul>
+            <p class="mt-3 text-slate-700">
+              By combining maps, comparative charts, and flow-based views, 
+              the dashboard transforms official datasets into visual insights that 
+              highlight regional strengths and reveal long-term patterns in Australia’s seafood economy.
+            </p>
+          </div>
+          <div>
+            <div class="img-slot-tall">Intro Image Placeholder</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+
+
+
+    <!-- 1) Map -->
+<section id="map" class="section">
+    <h2 class="section-title">Map · State/Territory Fishery Value (Selected Year)</h2>
+    <p class="section-sub">Darker shades indicate higher value. Hover to see state/territory and exact figures.</p>
+    <p class="sr">Choropleth map showing fishery value by state/territory for the selected year in thousands of AUD.</p>
+
+    <!-- Two columns: large left, small right; add horizontal padding to avoid sticking to the left -->
+    <div class="mt-4 grid grid-cols-1 md:grid-cols-[minmax(520px,820px),minmax(220px,360px)] gap-4 items-start md:px-6 lg:px-8">
+      <!-- Left: larger map, slightly pushed to the right -->
+      <div class="w-full md:ml-4 lg:ml-6 md:pr-2">
+        <div id="state-map" class="w-full h-[480px] md:h-[520px]"></div>
+      </div>
+
+      <!-- Right: narrower text area -->
+      <div class="md:max-w-[34ch]">
+        <h3 class="text-base font-semibold text-primary">How to read this</h3>
+        <ul class="list-disc pl-5 mt-2 text-slate-700 space-y-1.5">
+          <li><strong>High-value hubs</strong> often occur in states with strong marine industries (e.g., WA, TAS).</li>
+          <li><strong>Lower values</strong> tend to appear in inland or limited-coast regions (e.g., NT, ACT).</li>
+          <li><strong>Year-to-year shifts</strong> reveal recovery or volatility—use the year selector to compare.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+    <!-- 2) NSW vs QLD stacked areas -->
+    <section id="nsw-qld" class="section">
+      <h2 class="section-title">Comparison · New South Wales vs Queensland</h2>
+      <p class="section-sub">The upper chart is a stacked area (with lines/dots), and the time brush below can zoom to a specified interval.</p>
+      <p class="sr">Two linked area charts for comparing long-term changes in NSW and QLD, with total value controlled by the time brush range.</p>
+      <div class="chart-block">
+        <div id="state-comparison" class="w-full h-auto"></div>
+      </div>
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h3 class="text-base font-semibold text-primary">Key Points for Reading</h3>
+          <ul class="list-disc pl-5 mt-2 text-slate-700">
+            <li>Both states show <strong>moderate growth</strong> overall, but with significant periodic fluctuations.</li>
+            <li>Differences in certain years may be influenced by <strong>market prices, species composition</strong>, or <strong>policies</strong>.</li>
+            <li>The time brush helps you zoom in on details of changes in specific periods.</li>
+          </ul>
+        </div>
+        <div class="img-slot">Comparison Area Illustration / Comparison Image</div>
       </div>
     </section>
 
-    <section>
-      <div class="chart-container">
-        <div id="state-comparison" class="w-full h-[580px]"></div>
+    <!-- 3) TAC Mosaic -->
+    <section id="tac" class="section">
+      <h2 class="section-title">TAC Mosaic · Top-N Species and Year Range</h2>
+      <p class="section-sub">Area represents the TAC of the species in that year; column width represents the total TAC for that year; rows are sorted by overall quantity.</p>
+      <p class="sr">Mosaic layout: each year is normalized by total TAC, and the area of each species changes with the annual allocation. Supports Top-N and year sliding.</p>
+      <div class="chart-block">
+        <div id="tac-mosaic" class="w-full h-auto"></div>
+      </div>
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="img-slot">Species Illustration / Species Image</div>
+        <div>
+          <h3 class="text-base font-semibold text-primary">Key Points for Reading</h3>
+          <ul class="list-disc pl-5 mt-2 text-slate-700">
+            <li><strong>Head concentration</strong>: Top-N species contribute more, showing structural dependence.</li>
+            <li><strong>Annual structural changes</strong>: The proportion of head species increases or decreases in some years.</li>
+            <li><strong>Filtering strategy</strong>: By adjusting Top-N and year, focus on stable or fluctuating species.</li>
+          </ul>
+        </div>
       </div>
     </section>
-  </div>
 
+    <!-- 4) Commodity Share Stream -->
+    <section id="composition" class="section">
+      <h2 class="section-title">Structure · Contribution of Major Commodity Categories (Stream Chart)</h2>
+      <p class="section-sub">Click on the legend to highlight a category; the stream chart shows relative and absolute changes over time.</p>
+      <p class="sr">Stream area chart: shows the annual total value and share of major commodity categories. The legend can filter/highlight series.</p>
+      <div class="chart-block">
+        <div id="commodity-share" class="w-full h-[520px]"></div>
+      </div>
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h3 class="text-base font-semibold text-primary">Key Points for Reading</h3>
+          <ul class="list-disc pl-5 mt-2 text-slate-700">
+            <li><strong>Structural evolution</strong>: The share of certain categories (such as farmed products) increases year by year.</li>
+            <li><strong>Sources of fluctuation</strong>: Dependence on a single high-value category will amplify annual fluctuations.</li>
+            <li><strong>Comparative reading</strong>: Combined with maps/rankings, distinguish between "stable high value" and "short-term surge".</li>
+          </ul>
+        </div>
+        <div class="img-slot">Structure Illustration / Composition Image</div>
+      </div>
+    </section>
+
+    <!-- Key Insights -->
+    <section id="insights" class="section">
+      <h2 class="section-title">Key Insights · Summary Insights</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-2">
+          <ul class="list-disc pl-5 text-slate-700">
+            <li><strong>Regional differences</strong>: WA, TAS, etc. have long been in the high-value echelon; NT, ACT are relatively low.</li>
+            <li><strong>Overall trend</strong>: Nationally, there has been <strong>moderate growth</strong> in the past decade, with short-term declines and recoveries in individual years.</li>
+            <li><strong>Structural dependence</strong>: A small number of high-value species/categories account for a relatively high proportion, and there is sensitivity to fluctuations.</li>
+            <li><strong>Policy/market clues</strong>: Fluctuations in specific years may be related to international markets or management measures (no causal assertion).</li>
+          </ul>
+        </div>
+        <div>
+          <div class="img-slot-tall">Conclusion Illustration / Insight Image</div>
+        </div>
+      </div>
+    </section>
+
+ 
+  
+  <footer class="container-narrow border-t border-slate-200 py-6 text-sm text-slate-600">
+    <div>© 2025 Amber Cui | Monash University – FIT3179 Data Visualisation Project · <a class="text-primary underline" href="https://github.com/AmberCui1208/fit3179-map" target="_blank" rel="noreferrer">GitHub Source Code</a></div>
+  </footer>
+
+  <!-- ====== Vega-Lite Specifications and Embedding ====== -->
   <script>
     const csvWide = "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/Fishery_values__wide__preview.csv";
 
-    /* 1) Australia state/territory map */
+    /* 1) Australia map */
     const stateMapSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "background": null,
       "autosize": {"type": "fit", "contains": "padding"},
-      "width": 1050,
-      "height": 420,
-      "title": {
-        "text": "Australia Fishery Value by State/Territory",
-        "fontSize": 18,
-        "anchor": "start"   /* 左对齐 */
-      },
+      "width": "container",
+      "height": 440,
+      "title": { "text": "Australia Fishery Value by State/Territory", "fontSize": 18, "anchor": "start" },
       "projection": {"type": "equirectangular"},
       "params": [
         {
           "name": "yearLabel",
           "value": "2023–24",
-          "bind": {
-            "input": "select",
+          "bind": { "input": "select",
             "options": ["2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24"],
-            "name": "Year"
-          }
+            "name": "Year: " }
         }
       ],
       "layer": [
-        {
-          "data": { "graticule": { "step": [10,10], "extent": [[96,-44],[168,-9]] } },
-          "mark": { "type": "geoshape", "stroke": "#cbd5e1", "strokeWidth": 0.5, "opacity": 0.6 }
-        },
+        { "data": { "graticule": { "step": [10,10], "extent": [[96,-44],[168,-9]] } },
+          "mark": { "type": "geoshape", "stroke": "#cbd5e1", "strokeWidth": 0.6, "opacity": 0.6 } },
         {
           "data": {
             "url": "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/main/STE_2016_AUST.json",
             "format": { "type": "topojson", "feature": "STE_2016_AUST" }
           },
           "params": [
-            {
-              "name": "stHover",
-              "select": { "type": "point", "fields": ["properties.STE_NAME16"], "on": "pointerover", "clear": "pointerout" }
-            }
+            { "name": "stHover", "select": { "type": "point", "fields": ["properties.STE_NAME16"], "on": "pointerover", "clear": "pointerout" } }
           ],
           "transform": [
             {
               "lookup": "properties.STE_NAME16",
-              "from": {
-                "data": { "url": csvWide },
-                "key": "Commodity",
-                "fields": ["unit","2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24"]
-              }
+              "from": { "data": { "url": csvWide }, "key": "Commodity",
+                "fields": ["unit","2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24"] }
             },
             { "fold": ["2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24"], "as": ["YearLabel","Value_raw"] },
             { "filter": "datum.YearLabel == yearLabel" },
             { "calculate": "toNumber(datum.Value_raw)", "as": "Value_kAUD" },
-            { "filter": "isValid(datum.Value_kAUD) && isFinite(datum.Value_kAUD)" }  /* 防止 null/NaN */
+            { "filter": "isValid(datum.Value_kAUD) && isFinite(datum.Value_kAUD)" }
           ],
           "mark": { "type": "geoshape", "stroke": "white" },
           "encoding": {
-            "color": {
-              "field": "Value_kAUD",
-              "type": "quantitative",
-              "title": "Value ($'000 AUD)",
-              "scale": { "scheme": "greenblue" }
-            },
-            "strokeWidth": {
-              "condition": { "param": "stHover", "empty": false, "value": 3 },
-              "value": 0.6
-            },
+            "color": { "field": "Value_kAUD", "type": "quantitative", "title": "Value ($'000 AUD)", "scale": { "scheme": "greenblue" } },
+            "strokeWidth": { "condition": { "param": "stHover", "empty": false, "value": 2.5 }, "value": 0.6 },
             "tooltip": [
               { "field": "properties.STE_NAME16", "title": "State/Territory" },
               { "field": "YearLabel", "title": "Year" },
@@ -129,7 +293,7 @@
             ]
           }
         },
-        /* 最高值注释（红色、斜体、细字重） */
+        /* Highest annotation */
         {
           "data": { "url": csvWide },
           "transform": [
@@ -141,18 +305,10 @@
             { "filter": "datum.Value_kAUD == datum.maxVal" },
             { "calculate": "'Highest: ' + datum.Commodity + ' — ' + format(datum.Value_kAUD, ',.0f') + ' $\\'000'", "as": "peakLabel" }
           ],
-          "mark": {
-            "type": "text",
-            "x": 16, "y": 18,
-            "align": "left", "baseline": "top",
-            "fontSize": 12,
-            "fontStyle": "italic",
-            "fontWeight": 300,
-            "color": "#b91c1c"   /* 红色 */
-          },
+          "mark": { "type": "text","x": 16,"y": 18,"align": "left","baseline": "top","fontSize": 12,"fontStyle": "italic","fontWeight": 300,"color": "#b91c1c" },
           "encoding": { "text": { "field": "peakLabel" } }
         },
-        /* 全国总额注释（深蓝色、斜体、细字重） */
+        /* National total */
         {
           "data": { "url": csvWide },
           "transform": [
@@ -163,35 +319,24 @@
             { "window": [{ "op": "sum", "field": "Value_kAUD", "as": "natSum" }], "frame": [null,null] },
             { "calculate": "'National Total: ' + format(datum.natSum, ',.0f') + ' $\\'000'", "as": "sumLabel" }
           ],
-          "mark": {
-            "type": "text",
-            "x": 16, "y": 36,
-            "align": "left", "baseline": "top",
-            "fontSize": 12,
-            "fontStyle": "italic",
-            "fontWeight": 300,
-            "color": "#b91c1c"   /* 深蓝色 */
-          },
+          "mark": { "type": "text","x": 16,"y": 36,"align": "left","baseline": "top","fontSize": 12,"fontStyle": "italic","fontWeight": 300,"color": "#b91c1c" },
           "encoding": { "text": { "field": "sumLabel" } }
         }
       ],
-      "config": { "background": "#e6f3ff", "view": { "stroke": null } }
+      "config": { "view": { "stroke": null } }
     };
 
     /* 2) NSW vs QLD stacked areas with time brush */
     const stateComparisonSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "background": null,
       "autosize": {"type": "fit", "contains": "padding"},
-      "title": {
-        "text": "Fishery Value: New South Wales vs Queensland (1998–2024)",
-        "fontSize": 18,
-        "anchor": "start"   /* 左对齐 */
-      },
+      "title": { "text": "Fishery Value: New South Wales vs Queensland (1998–2024)", "fontSize": 18, "anchor": "start" },
       "data": { "url": "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/data2.csv" },
       "transform": [
         { "fold": ["1998–99","1999–00","2000–01","2001–02","2002–03","2003–04","2004–05","2005–06","2006–07","2007–08","2008–09","2009–10","2010–11","2011–12","2012–13","2013–14","2014–15","2015–16","2016–17","2017–18","2018–19","2019–20","2020–21","2021–22","2022–23","2023–24p"], "as": ["YearLabel","Value_raw"] },
         { "calculate": "toNumber(datum.Value_raw) || 0", "as": "Value_kAUD" },
-        { "filter": "isValid(datum.Value_kAUD) && isFinite(datum.Value_kAUD)" },  /* 防止 null/NaN */
+        { "filter": "isValid(datum.Value_kAUD) && isFinite(datum.Value_kAUD)" },
         { "calculate": "toNumber(substring(datum.YearLabel,0,4))", "as": "YearStart" },
         { "calculate": "datum.YearStart + 1", "as": "YearEnd" },
         { "calculate": "toDate(datum.YearEnd + '-06-30')", "as": "FiscalYearDate" },
@@ -199,26 +344,14 @@
       ],
       "vconcat": [
         {
-          "width": 980,
+          "width": "container",
           "height": 360,
           "mark": { "type": "area", "line": true, "point": true, "interpolate": "monotone" },
           "encoding": {
-            "x": {
-              "field": "FiscalYearDate", "type": "temporal",
-              "scale": {"domain": {"param": "timeBrush"}},
-              "axis": {"title": "Fiscal Year","titleColor": "#06174d","labelAngle": -45,"tickCount": 8,"format": "%Y","labelFontSize": 11}
-            },
-            "y": {
-              "aggregate": "sum", "field": "Value_kAUD", "type": "quantitative",
-              "title": "Fishery Value ($'000 AUD)","titleColor": "#06174d",
-              "axis": {"format": ",.0f","labelFontSize": 11},
-              "stack": "zero"
-            },
-            "color": {
-              "field": "Commodity","type": "nominal","title": "Australian State",
-              "scale": { "domain": ["New South Wales","Queensland"], "range": ["#3498db","#e74c3c"] },
-              "legend": { "orient": "top-right" }
-            },
+            "x": { "field": "FiscalYearDate","type": "temporal", "scale": {"domain": {"param": "timeBrush"}},
+              "axis": {"title": "Fiscal Year","titleColor": "#06174d","labelAngle": -45,"tickCount": 8,"format": "%Y","labelFontSize": 11} },
+            "y": { "aggregate": "sum","field": "Value_kAUD","type": "quantitative","title": "Fishery Value ($'000 AUD)","titleColor": "#06174d","axis": {"format": ",.0f","labelFontSize": 11},"stack": "zero" },
+            "color": { "field": "Commodity","type": "nominal","title": "Australian State","scale": { "domain": ["New South Wales","Queensland"], "range": ["#3498db","#e74c3c"] }, "legend": { "orient": "top-right" } },
             "tooltip": [
               {"field": "YearDisplay", "title": "Fiscal Year"},
               {"field": "Commodity", "title": "State"},
@@ -228,8 +361,8 @@
           }
         },
         {
-          "width": 980,
-          "height": 100,
+          "width": "container",
+          "height": 110,
           "mark": "area",
           "params": [ { "name": "timeBrush", "select": { "type": "interval", "encodings": ["x"] } } ],
           "encoding": {
@@ -239,24 +372,270 @@
           }
         }
       ],
-      "config": { "view": { "stroke": null }, "background": "#e6f3ff", "axis": { "gridColor": "#cbd5e1", "gridOpacity": 0.6 } }
+      "config": { "view": { "stroke": null } }
     };
 
-    /* Embed and handle resize */
+    /* 3) TAC Mosaic */
+    const tacMosaicSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "background": null,
+      "data": {
+        "url": "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/fishery_TAC_top12_recent5yrs.csv",
+        "format": {"type": "csv"}
+      },
+      "params": [
+        {
+          "name": "speciesCount",
+          "value": 5,
+          "bind": { "input": "range", "min": 3, "max": 12, "step": 1, "name": "Top-N species: ", "style": "font-size:12px; margin:5px 0" }
+        },
+        { "name": "minYear", "value": 2021,
+          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "Start year: ", "style": "font-size:12px; margin:5px 0" } },
+        { "name": "maxYear", "value": 2023,
+          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "End year: ", "style": "font-size:12px; margin:5px 0" } }
+      ],
+      "transform": [
+        { "fold": [
+            "2025–26 total allowable catch (tonnes)",
+            "2024–25 total allowable catch (tonnes)",
+            "2023–24 total allowable catch (tonnes)",
+            "2022–23 total allowable catch (tonnes)",
+            "2021–22 total allowable catch (tonnes)",
+            "2020–21 total allowable catch (tonnes)",
+            "2019–20 total allowable catch (tonnes)"
+          ], "as": ["Year", "TAC_raw"] },
+        {"calculate": "toNumber(datum.TAC_raw)", "as": "TAC"},
+        {"filter": "isValid(datum.TAC) && isFinite(datum.TAC) && datum.TAC > 0"},
+        {"calculate": "toNumber(replace(datum.Year, /(\\d{4}).*/, '$1'))", "as": "startYear"},
+        {"filter": "datum.startYear >= minYear && datum.startYear <= maxYear"},
+        {"aggregate": [{"op": "sum", "field": "TAC", "as": "value"}], "groupby": ["Year", "Species"]},
+        {"joinaggregate": [{"op": "sum", "field": "value", "as": "global_total_TAC"}], "groupby": ["Species"]},
+        {"window": [{"op": "dense_rank", "as": "global_rank_Species"}],
+         "sort": [{"field": "global_total_TAC", "order": "descending"}], "frame": [null, null]},
+        {"filter": "datum.global_rank_Species <= speciesCount"},
+        {"joinaggregate": [{"op": "sum", "field": "value", "as": "YearTotal"}], "groupby": ["Year"]},
+        {"joinaggregate": [{"op": "sum", "field": "YearTotal", "as": "GrandTotal"}]},
+        {"stack": "YearTotal", "groupby": [], "as": ["x0", "x1"], "offset": "normalize",
+         "sort": [{"field": "Year", "order": "ascending"}]},
+        {"window": [
+            {"op": "min", "field": "x0", "as": "x"},
+            {"op": "max", "field": "x1", "as": "x2"},
+            {"op": "dense_rank", "as": "rank_Year"}
+          ],
+          "groupby": ["Year"], "frame": [null, null],
+          "sort": [{"field": "Year", "order": "ascending"}]
+        },
+        {"stack": "value", "groupby": ["Year"], "as": ["y0", "y1"], "offset": "normalize",
+         "sort": [{"field": "global_rank_Species", "order": "ascending"}]},
+        {"calculate": "datum.y0 + (datum.global_rank_Species - 1) * 0.006", "as": "ny0"},
+        {"calculate": "datum.y1 + (datum.global_rank_Species - 1) * 0.006", "as": "ny1"},
+        {"calculate": "datum.x + (datum.rank_Year - 1) * 0.008", "as": "nx0"},
+        {"calculate": "datum.x2 + (datum.rank_Year - 1) * 0.008", "as": "nx1"},
+        {"calculate": "(datum.nx0 + datum.nx1) / 2", "as": "xc"},
+        {"calculate": "(datum.ny0 + datum.ny1) / 2", "as": "yc"},
+        {"calculate": "replace(datum.Year, /.*((?:19|20)\\d{2}–\\d{2}).*/, '$1')", "as": "YearLabel"},
+        {"calculate": "(datum.nx1 - datum.nx0) * (datum.ny1 - datum.ny0)", "as": "area"},
+        {"calculate": "datum.value / datum.YearTotal", "as": "shareInYear"},
+        {"window": [{"op": "rank", "as": "rank_in_year"}],
+         "sort": [{"field": "Year", "order": "ascending"}, {"field": "value", "order": "descending"}],
+         "groupby": ["Year"]}
+      ],
+      "vconcat": [
+        {
+          "transform": [{"aggregate": [{"op": "min", "field": "xc", "as": "xc"}], "groupby": ["YearLabel"]}],
+          "title": {
+            "text": "Species TAC Mosaic (Top-N, year-normalised)",
+            "fontSize": 16, "fontWeight": "bold", "anchor": "start", "font": "Arial", "color": "#333333"
+          },
+          "subtitle": {
+            "text": "Area ∝ TAC | Column width ∝ Year total | Rows sorted by global TAC",
+            "fontSize": 12, "anchor": "start", "font": "Arial", "color": "#666666", "offset": 5
+          },
+          "mark": {"type": "text", "baseline": "middle", "align": "center", "fontSize": 11, "font": "Arial"},
+          "encoding": { "x": {"field": "xc", "type": "quantitative", "axis": null}, "text": {"field": "YearLabel"}, "color": {"value": "#333333"} },
+          "width": "container",
+          "height": 30
+        },
+        {
+          "layer": [
+            {
+              "mark": {"type": "rect", "stroke": "white", "strokeWidth": 0.8, "cornerRadius": 2},
+              "encoding": {
+                "x": {
+                  "field": "nx0", "type": "quantitative",
+                  "title": "Year",
+                  "axis": {
+                    "orient": "bottom","labelAngle": -45,
+                    "labelFont": "Arial","labelFontSize": 10,
+                    "titleFont": "Arial","titleFontSize": 12,"titleFontWeight": "bold",
+                    "titleColor": "#333333","grid": false,"labelPadding": 5,"titlePadding": 10
+                  }
+                },
+                "x2": {"field": "nx1"},
+                "y": {
+                  "field": "ny0", "type": "quantitative",
+                  "title": "Species",
+                  "axis": {
+                    "orient": "left","labelFont": "Arial","labelFontSize": 10,
+                    "titleFont": "Arial","titleFontSize": 12,"titleFontWeight": "bold",
+                    "titleColor": "#333333","grid": false,"labelLimit": 150
+                  },
+                  "sort": "-global_total_TAC"
+                },
+                "y2": {"field": "ny1"},
+                "color": {
+                  "field": "Species", "type": "nominal",
+                  "title": "Species",
+                  "scale": {"scheme": "tableau20"},
+                  "legend": {
+                    "columns": 1,"labelLimit": 280,"labelFontSize": 11,"titleFontSize": 13,
+                    "titleFontWeight": "bold","symbolSize": 80,"orient": "right","offset": 10,
+                    "sort": "-value"
+                  }
+                },
+                "tooltip": [
+                  {"field": "YearLabel", "title": "Year"},
+                  {"field": "Species", "title": "Species"},
+                  {"field": "value", "title": "TAC (tonnes)", "format": ","},
+                  {"field": "shareInYear", "title": "Share in year", "format": ".1%"},
+                  {"field": "rank_in_year", "title": "Rank in year"},
+                  {"field": "global_total_TAC", "title": "Global total TAC", "format": ","}
+                ]
+              }
+            },
+            {
+              "transform": [{"filter": "datum.area > 0.015"}],
+              "mark": {
+                "type": "text", "baseline": "middle", "align": "center",
+                "fontSize": 9, "font": "Arial", "fontWeight": "500",
+                "fill": "#ffffff", "background": "rgba(0,0,0,0.3)", "padding": [2, 4]
+              },
+              "encoding": {
+                "x": {"field": "xc", "type": "quantitative"},
+                "y": {"field": "yc", "type": "quantitative"},
+                "text": {"field": "Species", "limit": 15}
+              }
+            },
+            {
+              "transform": [
+                {"aggregate": [{"op": "count", "as": "dataCount"}], "groupby": []},
+                {"filter": "datum.dataCount === 0"}
+              ],
+              "mark": {"type": "text", "fontSize": 14, "color": "#999999", "font": "Arial"},
+              "encoding": {
+                "x": {"value": 370}, "y": {"value": 200},
+                "text": {"value": "No data for current filters. Please adjust the sliders."}
+              }
+            }
+          ],
+          "width": "container",
+          "height": 460
+        }
+      ],
+      "resolve": {"scale": {"x": "shared", "color": "independent"}},
+      "config": { "view": {"stroke": null}, "concat": {"spacing": 8}, "axis": {"domain": false, "ticks": false, "labels": false, "grid": false}, "legend": {"labelFont": "Arial", "titleFont": "Arial", "labelColor": "#333333", "titleColor": "#333333"} }
+    };
+
+    /* 4) Commodity Share */
+    const commodityShareSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "background": null,
+      "width": "container",
+      "height": 520,
+      "title": { "text": "2019–2024 Major Commodity Value Share", "fontSize": 18, "fontWeight": "bold", "anchor": "start" },
+      "data": {
+        "url": "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/main/commodity_values_2019_2024.csv",
+        "format": {"type": "csv"}
+      },
+      "params": [
+        { "name": "selectedSeries", "select": { "type": "point", "fields": ["series"] }, "bind": "legend" }
+      ],
+      "transform": [
+        {"filter": "datum.unit && indexof(datum.unit, '$') >= 0"},
+        {"filter": "!test(/total\\s*fisheries/i, datum.Commodity)"},
+        {
+          "fold": [
+            "1989–90","1990–91","1991–92","1992–93","1993–94","1994–95","1995–96","1996–97","1997–98","1998–99",
+            "1999–00","2000–01","2001–02","2002–03","2003–04","2004–05","2005–06","2006–07","2007–08","2008–09",
+            "2009–10","2010–11","2011–12","2012–13","2013–14","2014–15","2015–16","2016–17","2017–18","2018–19",
+            "2019–20","2020–21","2021–22","2022–23","2023–24"
+          ],
+          "as": ["YearLabel", "Value_raw"]
+        },
+        {"calculate": "toNumber(replace(datum.Value_raw, /,/g, ''))", "as": "Value"},
+        {"filter": "isValid(datum.Value) && isFinite(datum.Value) && datum.Value > 0"},
+        {"calculate": "toNumber(substring(datum.YearLabel, 0, 4))", "as": "YearStart"},
+        {"calculate": "toDate(datum.YearStart + '-06-30')", "as": "date"},
+        {"aggregate": [{"op": "sum", "field": "Value", "as": "YearlyValue"}], "groupby": ["Commodity", "YearLabel", "date"]},
+        {"calculate": "datum.Commodity", "as": "series"},
+        {"joinaggregate": [{"op": "sum", "field": "YearlyValue", "as": "YearTotal"}], "groupby": ["YearLabel"]},
+        {"calculate": "datum.YearlyValue / datum.YearTotal", "as": "Share"},
+        {"filter": {"param": "selectedSeries", "empty": true}}
+      ],
+      "mark": { "type": "area", "interpolate": "monotone", "line": true, "point": false },
+      "encoding": {
+        "x": {
+          "field": "date",
+          "type": "temporal",
+          "axis": { "format": "%Y", "labelAngle": 0, "title": "Financial Year", "titleFontSize": 12, "labelFontSize": 11 }
+        },
+        "y": {
+          "aggregate": "sum",
+          "field": "YearlyValue",
+          "type": "quantitative",
+          "stack": "center",
+          "axis": null
+        },
+        "color": {
+          "field": "series",
+          "type": "nominal",
+          "scale": {"scheme": "category20b"},
+          "legend": {
+            "title": "Commodity Type",
+            "titleFontSize": 12,
+            "labelFontSize": 11,
+            "columns": 1,
+            "orient": "right",
+            "offset": 10,
+            "symbolSize": 80
+          }
+        },
+        "opacity": {
+          "condition": {"param": "selectedSeries", "value": 1},
+          "value": 0.2
+        },
+        "tooltip": [
+          {"field": "YearLabel", "title": "Financial Year"},
+          {"field": "series", "title": "Commodity"},
+          {"field": "YearlyValue", "title": "Value ($'000 AUD)", "format": ",.0f"},
+          {"field": "Share", "title": "Annual Share", "format": ".1%"}
+        ]
+      },
+      "config": { "view": {"stroke": null}, "axis": {"grid": false} }
+    };
+
+    /* 嵌入与自适应（隐藏 actions 菜单；需要可改 true） */
     document.addEventListener('DOMContentLoaded', async () => {
       try {
-        const mapResult = await vegaEmbed('#state-map', stateMapSpec, { actions: true, renderer: 'canvas' });
-        const stackedResult = await vegaEmbed('#state-comparison', stateComparisonSpec, { actions: true, renderer: 'canvas' });
+        const opts = { actions: false, renderer: 'canvas' };
+        const mapResult = await vegaEmbed('#state-map', stateMapSpec, opts);
+        const stackedResult = await vegaEmbed('#state-comparison', stateComparisonSpec, opts);
+        const tacResult = await vegaEmbed('#tac-mosaic', tacMosaicSpec, opts);
+        const comResult = await vegaEmbed('#commodity-share', commodityShareSpec, opts);
 
-        window.addEventListener('resize', () => {
+        const onResize = () => {
           mapResult.view.resize().run();
           stackedResult.view.resize().run();
-        });
+          tacResult.view.resize().run();
+          comResult.view.resize().run();
+        };
+        window.addEventListener('resize', onResize);
       } catch (err) { console.error(err); }
     });
   </script>
 </body>
 </html>
+
 
 
 
