@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Australian Fishery Value Dashboard</title>
 
   <!-- Tailwind CSS -->
@@ -13,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 
   <!-- Font Awesome -->
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
   <script>
     // Tailwind theme extension
@@ -29,7 +30,7 @@
   <style type="text/tailwindcss">
     @layer utilities {
       .container-narrow { @apply max-w-7xl mx-auto px-4 md:px-8; }
-      .hero-title { @apply text-3xl md:text-4xl font-bold text-primary tracking-tight; }
+      .hero-title { @apply text-3xl md:text-5xl lg:text-6xl font-bold text-primary tracking-tight; }
       .hero-sub { @apply text-base md:text-lg text-slate-700 mt-3; }
       .nav-link { @apply text-sm md:text-base text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary/30 rounded px-1; }
       .section { @apply pt-10 md:pt-12; }
@@ -42,106 +43,107 @@
     }
   </style>
 </head>
+
 <body class="bg-background min-h-screen">
 
-  <!-- Hero -->
-  <header class="mx-auto max-w-screen-xl px-4 md:px-6 lg:px-8 py-10 md:py-14">
-    <div class="grid gap-7 md:gap-12 md:grid-cols-[1fr,420px] lg:grid-cols-[1fr,520px] items-start">
-      <div class="max-w-prose">
-        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-[#06174d] mb-4">
-          <i class="fa fa-bar-chart mr-3"></i>Australian Fishery Value Analysis
-        </h1>
-        <p class="text-gray-700 text-lg md:text-xl leading-relaxed mb-3">
-          Australia’s fisheries are a vital part of the nation’s economy and food security.
-          This dashboard shows how values change across states and territories,
-          highlighting regional strengths and long-term trends.
-        </p>
-        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-3">
-          Explore the patterns to identify growth hotspots, emerging opportunities,
-          and the evolving landscape of Australia’s seafood industry.
-        </p>
-        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-3">
-          Designed for a general audience, this interactive Vega-Lite dashboard turns official
-          statistics into clear visuals that aid understanding and policy reflection.
-        </p>
-      </div>
-
-      <!-- Right image -->
-      <figure class="justify-self-end w-full">
-        <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img
-            src="https://raw.githubusercontent.com/AmberCui1208/fit3179-map/main/fish-lobster-shrimp-squid-hand-260nw-2445155959.jpg.webp"
-            alt="Fishery products"
-            class="w-full h-full object-cover aspect-[5/4] transition-transform duration-300 hover:scale-105"
-          />
-        </div>
-      </figure>
-    </div>
-  </header>
-
-  <!-- Background wrapper (page-wide background image) -->
+  <!-- Page background -->
   <div class="relative bg-cover bg-center bg-no-repeat"
        style="background-image:url('https://raw.githubusercontent.com/AmberCui1208/fit3179-map/main/pic2.png');">
 
     <!-- Main content -->
     <main class="container-narrow pb-16">
 
-      <!-- Intro card -->
+      <!-- Title card -->
       <section class="section">
-        <div class="rounded-2xl bg-[#eaf4ff] shadow-lg p-8 md:p-10">
-          <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-[#06174d]">
-            <i class="fa fa-bar-chart mr-3"></i>Australian Fishery Value Analysis
+        <div class="rounded-2xl bg-[#eaf4ff] shadow-lg p-8 md:p-12">
+          <h1 class="hero-title text-center">
+            <i class="fa fa-bar-chart mr-3"></i>Australian Fishery
           </h1>
-          <p class="text-gray-700 text-lg md:text-xl leading-relaxed mt-3">
-            A compact view of state/territory patterns and long-run structure.
-          </p>
-          <p class="text-gray-700 text-base md:text-lg leading-relaxed mt-2">
-            Use the controls and annotations to focus on the periods and categories that matter to you.
-          </p>
         </div>
       </section>
 
-      <!-- 1) Map + NSW vs QLD -->
-      <section id="map-and-compare" class="section">
-        <!-- Section header -->
-        <div class="rounded-2xl bg-[#eaf4ff] shadow-md px-6 py-5 md:px-8 md:py-6">
-          <h2 class="section-title m-0">State View · Map & NSW–QLD Comparison</h2>
-          <p class="section-sub m-0">
-            The map shows state/territory fishery value by year; below compares NSW vs QLD with a time brush.
-          </p>
-        </div>
-
-        <!-- Charts card -->
-        <div class="rounded-2xl bg-[#f2f8ff] shadow-lg p-6 md:p-8 mt-4 overflow-hidden">
-          <!-- Choropleth -->
-          <h3 class="text-base font-semibold text-primary mb-3">Choropleth Map</h3>
-          <div class="rounded-xl overflow-hidden border border-slate-200">
-            <div id="state-map" class="w-full h-[460px] md:h-[520px]"></div>
-          </div>
-
-          <hr class="my-6 border-slate-300/60"/>
-
-          <!-- NSW vs QLD: chart + notes -->
-          <h3 class="text-base font-semibold text-primary mb-3">NSW vs Queensland (Stacked Area + Brush)</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            <!-- Chart -->
-            <div class="rounded-xl overflow-hidden border border-slate-200">
-              <div id="state-comparison" class="w-full h-[500px]"></div>
+      <!-- Intro card: left text, right image -->
+      <section class="section">
+        <div class="rounded-2xl bg-[#eaf4ff] shadow-lg p-8 md:p-10">
+          <div class="grid gap-7 md:gap-12 md:grid-cols-[1fr,420px] lg:grid-cols-[1fr,520px] items-start">
+            <div class="max-w-prose">
+              <p class="text-gray-700 text-lg md:text-xl leading-relaxed mb-3">
+                Australia’s fisheries are vital to the nation’s economy, regional livelihoods,
+                and food security. Yet, the scale and composition of fishery values differ
+                widely across states and over time, making it hard to see regional patterns
+                and long-term trends.
+              </p>
+              <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-3">
+                This dashboard visualises official data on fishery production across Australian
+                states and territories, combining spatial and temporal views to reveal shifts
+                in value and industry structure.
+              </p>
+              <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-3">
+                It is designed for Australians interested in seafood, regional economics, or
+                sustainability — helping students, communities, and policymakers understand
+                where and how the nation’s fisheries are changing.
+              </p>
             </div>
 
+            <!-- Right image -->
+            <figure class="justify-self-end w-full max-w-[83%]">
+              <div class="rounded-2xl overflow-hidden shadow-lg">
+                <img
+                  src="https://raw.githubusercontent.com/AmberCui1208/fit3179-map/main/Screenshot%202025-10-19%20at%209.18.32%20pm.png"
+                  alt="Fishery products"
+                  class="w-full h-full object-cover aspect-[5/4] transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section header -->
+      <section class="section">
+        <div class="rounded-2xl bg-[#eaf4ff] shadow-lg p-8 md:p-10">
+          <h2 class="text-2xl md:text-3xl font-bold text-primary">Fishery Value: Trends & Distribution</h2>
+        </div>
+      </section>
+
+      <!-- (1) Map + NSW vs QLD -->
+      <section id="map-and-compare" class="section">
+        <div class="rounded-2xl bg-[#f2f8ff] shadow-lg p-6 md:p-8 mt-4 overflow-hidden">
+          <!-- Choropleth map -->
+          <div id="state-map" class="w-full h-[460px] md:h-[520px]" aria-label="Fishery value by state/territory map"></div>
+
+          <!-- NSW vs QLD: chart + notes -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start mt-6">
+            <!-- Chart -->
+            <div id="state-comparison" class="w-full h-[500px]" aria-label="NSW vs Queensland stacked area over time"></div>
+
             <!-- Text panel -->
-            <div class="bg-white/50 rounded-xl p-5 border border-slate-200 h-[500px] overflow-y-auto">
+            <div class="p-5 h-[500px] overflow-y-auto">
               <h4 class="font-medium text-primary mb-2">Key Observations</h4>
               <ul class="list-disc pl-5 text-slate-700 space-y-2">
-                <li>Both states show similar growth with different volatility phases.</li>
-                <li>NSW leads most years; QLD briefly surpasses around 2015.</li>
-                <li>2019–2021 dip is visible across the national map.</li>
-                <li>Use the brush to isolate post-2021 recovery or other windows.</li>
+                <li>
+                  <strong>Distribution:</strong> The map reveals clear regional disparities. Western Australia
+                  typically leads national value, while smaller jurisdictions jurisdictions contribute less.
+                </li>
+                <li>
+                  <strong>Trend:</strong> State contributions fluctuate across 1998–2024, with a softening around
+                  2010–2018 and a noticeable rebound after 2020.
+                </li>
+                <li>
+                  <strong>NSW vs QLD:</strong> Queensland shows a marked uptick post-2020, while New South Wales
+                  is steadier overall—indicating shifting dominance within eastern fisheries.
+                </li>
+                <li>
+                  <strong>Takeaway:</strong> Australia’s fishery value shows regional concentration but long-run
+                  resilience, balancing cyclical dips with recent recovery.
+                </li>
               </ul>
+
               <div class="mt-4 pt-4 border-t border-slate-200">
-                <h4 class="font-medium text-primary mb-2">Map Link</h4>
+                <h4 class="font-medium text-primary mb-2">Context & Notes</h4>
                 <p class="text-slate-700 text-sm leading-relaxed">
-                  These eastern states rank among top contributors, with WA gaining share after 2018.
+                  Use the year selector on the map for spatial comparisons, and the brush on the stacked
+                  area chart to zoom into periods of change (e.g., post-2020 recovery).
                 </p>
               </div>
             </div>
@@ -149,41 +151,70 @@
         </div>
       </section>
 
-      <!-- 2) TAC Mosaic + TAC Box Plot -->
-      <section id="tac" class="section">
+      <!-- (2) TAC Mosaic + Box Plot -->
+      <section id="tac-section" class="section">
         <!-- Section header -->
-        <div class="rounded-2xl bg-[#eaf4ff] shadow-md px-6 py-5 md:px-8 md:py-6">
-          <h2 class="section-title m-0">TAC · Species Structure & Variability</h2>
-          <p class="section-sub m-0">
-            Mosaic: area ∝ species TAC; column width ∝ yearly total. Box plot: variability by species.
-          </p>
+        <div class="rounded-2xl bg-[#eaf4ff] shadow-lg p-8 md:p-10">
+          <h2 class="text-2xl md:text-3xl font-bold text-primary">TAC Overview & Variability</h2>
         </div>
 
-        <!-- Charts card -->
-        <div class="rounded-2xl bg-[#f2f8ff] shadow-lg p-6 md:p-8 mt-4">
-          <!-- Mosaic -->
-          <h3 class="text-base font-semibold text-primary mb-3">TAC Mosaic</h3>
-          <div class="rounded-xl overflow-hidden">
-            <div id="tac-mosaic" class="w-full h-auto"></div>
+        <!-- Content card -->
+        <div class="rounded-2xl bg-[#f2f8ff] shadow-lg mt-4 p-6 md:p-8 overflow-hidden">
+          <!-- Mosaic (full width) -->
+          <div id="tac-mosaic"
+               class="w-full h-[460px] md:h-[500px] mb-12"
+               aria-label="Species TAC mosaic across recent years">
           </div>
 
-          <hr class="my-6 border-slate-300/60"/>
+          <!-- Divider -->
+          <div class="h-px bg-slate-200/70 my-4 md:my-6"></div>
 
-          <!-- Box plot -->
-          <h3 class="text-base font-semibold text-primary mb-3">TAC Box Plot · Species Variability</h3>
-          <div id="tac-box" class="w-full h-[420px]"></div>
+          <!-- Box plot with left text, right chart -->
+          <div class="grid grid-cols-1 md:grid-cols-[300px,1fr] gap-6 items-start">
+            <!-- Left text -->
+            <aside class="p-5 md:sticky md:top-4">
+              <p class="text-slate-700 text-sm md:text-base leading-relaxed mb-3">
+                Australia uses <strong>Total Allowable Catch (TAC)</strong> — regulatory limits — to keep fisheries sustainable. Below are two key views to unpack TAC patterns:
+              </p>
+
+              <ul class="list-disc pl-5 text-slate-700 text-sm space-y-3 mb-4">
+                <li>
+                  <strong>Mosaic Chart (Top):</strong> Tiles show quota distribution across top species (tile size = TAC amount). It reveals which species dominate each year and how allocations shift over time.
+                </li>
+                <li>
+                  <strong>Box Plot (Right):</strong> Summarises TAC variability per species — you’ll see which have stable quotas vs. large annual adjustments (median = typical quota; whiskers = min/max).
+                </li>
+              </ul>
+
+              <div class="mt-4 pt-4 border-t border-slate-200">
+                <h4 class="font-medium text-primary mb-2">Why it matters</h4>
+                <p class="text-slate-700 text-sm leading-relaxed">
+                  These visuals show how Australia balances <em>ecological sustainability</em> (via adjusted quotas) and <em>economic yield</em> (via consistent top-species allocations). Use the sliders to tweak the top species count and year range.
+                </p>
+              </div>
+            </aside>
+
+            <!-- Right chart -->
+            <div>
+              <div id="tac-box"
+                   class="w-full h-[460px] md:h-[520px]"
+                   aria-label="Box plot of TAC variability by species">
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- 3) Commodity Share (stream) + Lollipop -->
+      <!-- (3) Commodity stream + lollipop -->
       <section id="composition" class="section">
         <!-- Section header -->
-        <div class="rounded-2xl bg-[#eaf4ff] shadow-md px-6 py-5 md:px-8 md:py-6">
-          <h2 class="section-title m-0">Structure · Contribution of Major Commodity Categories (Stream)</h2>
-          <p class="section-sub m-0">Click legend to focus a category; stream shows both relative and absolute shifts.</p>
-        </div>
+        <section class="section">
+          <div class="rounded-2xl bg-[#eaf4ff] shadow-lg p-8 md:p-10">
+            <h2 class="text-2xl md:text-3xl font-bold text-primary">Commodity Mix & Change</h2>
+          </div>
+        </section>
 
-        <!-- Charts card -->
+        <!-- Content card -->
         <div class="rounded-2xl bg-[#f2f8ff] shadow-lg p-6 md:p-8 mt-4 overflow-hidden vega-fit">
           <!-- Stream -->
           <div class="rounded-xl overflow-hidden">
@@ -193,14 +224,46 @@
           <hr class="my-6 border-slate-300/60"/>
 
           <!-- Lollipop -->
-          <h3 class="text-base font-semibold text-primary mb-3">Lollipop · Top-N & Change vs Baseline</h3>
           <div class="rounded-xl overflow-hidden">
             <div id="commodity-lollipop" class="w-full h-[520px]"></div>
           </div>
+
+          <!-- Image + text -->
+          <div class="mt-6 pt-6 border-t border-slate-300/60">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <!-- Image (reduced width) -->
+              <div class="rounded-xl overflow-hidden shadow-md max-w-[75%] mx-auto md:mx-11">
+                <img
+                  src="https://github.com/AmberCui1208/fit3179-map/blob/main/images-5.jpeg?raw=true"
+                  alt="Commodity visualization"
+                  class="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+
+              <!-- Text -->
+              <div>
+                <h4 class="font-medium text-primary mb-2">Key Observations</h4>
+                <ul class="list-disc pl-5 text-slate-700 space-y-2">
+                  <li><strong>Structure:</strong> The stream shows each commodity category’s share and level from 1989–2024.</li>
+                  <li><strong>Shifts:</strong> Cycles appear around the early 2000s and late 2010s.</li>
+                  <li><strong>Latest:</strong> Recent years show recovery in several categories; the mix remains concentrated.</li>
+                  <li><strong>Takeaway:</strong> Composition changes slowly; leaders explain total value trends.</li>
+                </ul>
+
+                <div class="mt-4 pt-4 border-t border-slate-200">
+                  <h4 class="font-medium text-primary mb-2">Context & Notes</h4>
+                  <p class="text-slate-700 text-sm leading-relaxed">
+                    Use the legend to focus a category. The lollipop compares the selected year with a baseline for Top-N categories — position shows current value; colour shows increase or decrease.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End image + text -->
         </div>
       </section>
 
-      <!-- 4) Key insights -->
+      <!-- (4) Summary -->
       <section id="insights" class="section">
         <div class="rounded-2xl bg-[#eaf4ff] shadow-lg p-6 md:p-8">
           <h2 class="section-title">Key Insights · Summary</h2>
@@ -224,11 +287,11 @@
     </footer>
   </div>
 
-  <!-- Vega-Lite specs and embedding -->
+  <!-- Vega-Lite specs & embedding -->
   <script>
     const csvWide = "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/Fishery_values__wide__preview.csv";
 
-    // 1) Australia state map
+    // (1) State choropleth
     const stateMapSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "background": null,
@@ -289,7 +352,6 @@
             ]
           }
         },
-        /* Top state annotation */
         {
           "data": { "url": csvWide },
           "transform": [
@@ -304,7 +366,6 @@
           "mark": { "type": "text","x": 16,"y": 18,"align": "left","baseline": "top","fontSize": 12,"fontStyle": "italic","fontWeight": 300,"color": "#b91c1c" },
           "encoding": { "text": { "field": "peakLabel" } }
         },
-        /* National total annotation */
         {
           "data": { "url": csvWide },
           "transform": [
@@ -322,7 +383,7 @@
       "config": { "view": { "stroke": null } }
     };
 
-    // 2) NSW vs QLD stacked areas with time brush
+    // (1b) NSW vs QLD stacked areas with time brush
     const stateComparisonSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "background": null,
@@ -371,7 +432,7 @@
       "config": { "view": { "stroke": null } }
     };
 
-    // 3) TAC Mosaic
+    // (2a) TAC Mosaic
     const tacMosaicSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "background": null,
@@ -380,19 +441,12 @@
         "format": {"type": "csv"}
       },
       "params": [
-        {
-          "name": "speciesCount",
-          "value": 5,
-          "bind": { "input": "range", "min": 3, "max": 12, "step": 1, "name": "Top-N species: ", "style": "font-size:12px; margin:5px 0" }
-        },
-        {
-          "name": "minYear", "value": 2021,
-          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "Start year: ", "style": "font-size:12px; margin:5px 0" }
-        },
-        {
-          "name": "maxYear", "value": 2023,
-          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "End year: ", "style": "font-size:12px; margin:5px 0" }
-        }
+        { "name": "speciesCount", "value": 5,
+          "bind": { "input": "range", "min": 3, "max": 12, "step": 1, "name": "Top-N species: ", "style": "font-size:12px; margin:5px 0" } },
+        { "name": "minYear", "value": 2021,
+          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "Start year: ", "style": "font-size:12px; margin:5px 0" } },
+        { "name": "maxYear", "value": 2023,
+          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "End year: ", "style": "font-size:12px; margin:5px 0" } }
       ],
       "transform": [
         { "fold": [
@@ -545,31 +599,24 @@
       }
     };
 
-    // 3b) TAC Box Plot
+    // (2b) TAC Box Plot
     const tacBoxSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "background": null,
       "width": "container",
-      "height": 420,
+      "height": 390,
       "title": { "text": "TAC Variability by Species (Box Plot)", "fontSize": 18, "anchor": "start" },
       "data": {
         "url": "https://raw.githubusercontent.com/AmberCui1208/fit3179-map/refs/heads/main/fishery_TAC_top12_recent5yrs.csv",
         "format": { "type": "csv" }
       },
       "params": [
-        {
-          "name": "speciesCount",
-          "value": 5,
-          "bind": { "input": "range", "min": 3, "max": 12, "step": 1, "name": "Top-N species: ", "style": "font-size:12px; margin:5px 0" }
-        },
-        {
-          "name": "minYear", "value": 2021,
-          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "Start year: ", "style": "font-size:12px; margin:5px 0" }
-        },
-        {
-          "name": "maxYear", "value": 2025,
-          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "End year: ", "style": "font-size:12px; margin:5px 0" }
-        }
+        { "name": "speciesCount", "value": 5,
+          "bind": { "input": "range", "min": 3, "max": 12, "step": 1, "name": "Top-N species: ", "style": "font-size:12px; margin:5px 0" } },
+        { "name": "minYear", "value": 2021,
+          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "Start year: ", "style": "font-size:12px; margin:5px 0" } },
+        { "name": "maxYear", "value": 2025,
+          "bind": { "input": "range", "min": 2021, "max": 2025, "step": 1, "name": "End year: ", "style": "font-size:12px; margin:5px 0" } }
       ],
       "transform": [
         {
@@ -598,7 +645,11 @@
         "x": {
           "field": "Species", "type": "nominal", "title": "Species",
           "sort": "-x",
-          "axis": { "labelLimit": 140 }
+          "axis": {
+            "labelLimit": 140,
+            "labelAngle": -45,   // tilt labels to reduce overlap
+            "labelPadding": 10   // add spacing to avoid collisions
+          }
         },
         "y": { "field": "TAC", "type": "quantitative", "title": "TAC (tonnes)" },
         "color": { "field": "Species", "type": "nominal", "legend": null }
@@ -609,7 +660,7 @@
       }
     };
 
-    // 4) Commodity Share (stream)
+    // (3a) Commodity stream
     const commodityShareSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "background": null,
@@ -678,7 +729,7 @@
       "config": { "view": { "stroke": null }, "axis": { "grid": false } }
     };
 
-    // 5) Lollipop: Top-N with baseline diff
+    // (3b) Lollipop (Top-N vs baseline)
     const lollipopSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "background": null,
@@ -716,11 +767,8 @@
             ]
           }
         },
-        {
-          "name": "topN",
-          "value": 12,
-          "bind": { "input": "range", "min": 5, "max": 17, "step": 1, "name": "Top-N: " }
-        }
+        { "name": "topN", "value": 12,
+          "bind": { "input": "range", "min": 5, "max": 17, "step": 1, "name": "Top-N: " } }
       ],
       "transform": [
         { "filter": "datum.unit && indexof(datum.unit, '$') >= 0" },
@@ -735,8 +783,6 @@
         },
         { "calculate": "toNumber(replace(datum.Value_raw, /,/g, ''))", "as": "Value" },
         { "filter": "isValid(datum.Value) && isFinite(datum.Value) && datum.Value >= 0" },
-
-        // Split selected year and baseline values per commodity
         { "calculate": "datum.YearLabel == selectedYear ? datum.Value : 0", "as": "ValSel" },
         { "calculate": "datum.YearLabel == baseYear ? datum.Value : 0", "as": "ValBase" },
         { "aggregate": [
@@ -745,30 +791,20 @@
           ],
           "groupby": ["Commodity"]
         },
-
-        // Guard for same-year baseline (delta should be zero)
         { "calculate": "selectedYear == baseYear", "as": "SameYear" },
         { "calculate": "datum.SameYear ? datum.SelectedValue : datum.BaselineValue", "as": "BaselineAdj" },
         { "calculate": "datum.SameYear ? 0 : datum.SelectedValue - datum.BaselineAdj", "as": "Delta" },
         { "calculate": "datum.Delta == 0 ? 'No Change' : (datum.Delta > 0 ? 'Increase' : 'Decrease')", "as": "Change" },
-
-        // Top-N by current value
         { "window": [{ "op": "rank", "as": "r" }], "sort": [{ "field": "SelectedValue", "order": "descending" }] },
         { "filter": "datum.r <= topN" },
-
-        // Label position helper
         { "calculate": "max(datum.SelectedValue, datum.BaselineAdj)", "as": "MaxX" }
       ],
       "layer": [
-        // Rule: baseline → selected
         {
           "mark": { "type": "rule", "strokeWidth": 3, "strokeCap": "round" },
           "encoding": {
-            "y": {
-              "field": "Commodity", "type": "nominal",
-              "sort": { "field": "SelectedValue", "order": "descending" },
-              "title": "Commodity"
-            },
+            "y": { "field": "Commodity", "type": "nominal",
+                   "sort": { "field": "SelectedValue", "order": "descending" }, "title": "Commodity" },
             "x":  { "field": "BaselineAdj", "type": "quantitative", "title": "Value ($'000 AUD)", "axis": { "format": ",.0f" } },
             "x2": { "field": "SelectedValue" },
             "color": {
@@ -778,7 +814,6 @@
             }
           }
         },
-        // Baseline point (hollow)
         {
           "mark": { "type": "point", "filled": false, "strokeWidth": 1.5, "size": 80 },
           "encoding": {
@@ -787,7 +822,6 @@
             "color": { "value": "#94a3b8" }
           }
         },
-        // Selected point (filled)
         {
           "mark": { "type": "point", "filled": true, "size": 120, "stroke": "white", "strokeWidth": 1.5 },
           "encoding": {
@@ -800,7 +834,6 @@
             }
           }
         },
-        // Value label (selected value)
         {
           "mark": { "type": "text", "align": "left", "baseline": "middle", "dx": 6, "fontSize": 11 },
           "encoding": {
@@ -819,12 +852,12 @@
       try {
         const opts = { actions: false, renderer: 'canvas' };
 
-        const mapResult      = await vegaEmbed('#state-map', stateMapSpec, opts);
-        const stackedResult  = await vegaEmbed('#state-comparison', stateComparisonSpec, opts);
-        const tacResult      = await vegaEmbed('#tac-mosaic', tacMosaicSpec, opts);
-        const tacBoxResult   = await vegaEmbed('#tac-box', tacBoxSpec, opts);
-        const comResult      = await vegaEmbed('#commodity-share', commodityShareSpec, opts);
-        const lolliResult    = await vegaEmbed('#commodity-lollipop', lollipopSpec, opts);
+        const mapResult     = await vegaEmbed('#state-map', stateMapSpec, opts);
+        const stackedResult = await vegaEmbed('#state-comparison', stateComparisonSpec, opts);
+        const tacResult     = await vegaEmbed('#tac-mosaic', tacMosaicSpec, opts);
+        const tacBoxResult  = await vegaEmbed('#tac-box', tacBoxSpec, opts);
+        const comResult     = await vegaEmbed('#commodity-share', commodityShareSpec, opts);
+        const lolliResult   = await vegaEmbed('#commodity-lollipop', lollipopSpec, opts);
 
         // Simple responsive resize
         const onResize = () => {
@@ -843,6 +876,7 @@
   </script>
 </body>
 </html>
+
 
 
 
